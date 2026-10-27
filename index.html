@@ -1229,6 +1229,7 @@
         }
 
         function selectDay(dayIdx) {
+            usedVideoFallback = false;
             state.selectedDayIndex = dayIdx;
             renderWeeklyAttendance();
             renderWeeklyLineupPills();
@@ -1359,6 +1360,7 @@
 
             // Rotate Weekly 7 Workouts Button
             document.getElementById('btnRotateWeek')?.addEventListener('click', () => {
+                usedVideoFallback = false;
                 playSoundEffect('click');
                 state.weekSetIndex = (state.weekSetIndex + 1) % WEEKLY_ROTATION_SETS.length;
                 renderWeeklyAttendance();
