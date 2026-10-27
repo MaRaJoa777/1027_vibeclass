@@ -1,0 +1,106 @@
+# 🔥 SAIYAN FIT (사이언 핏) : 전사 육성 홈트레이닝 RPG 웹앱
+
+> **"매일 운동 영상을 끝까지 시청하고 전투력을 돌파하라!"**  
+> 나만의 실사풍 3D 전사 아바타를 육성하며 매일 새로운 글로벌 인기 홈트레이닝 쇼츠(Shorts) 루틴을 수행하는 **반응형 RPG 피트니스 웹 애플리케이션**입니다.
+
+- **GitHub Repository**: [https://github.com/MaRaJoa777/1027_vibeclass.git](https://github.com/MaRaJoa777/1027_vibeclass.git)
+
+---
+
+## 🛠️ 2026-10-27 수정 사항
+
+### 고정 캐릭터
+- 아바타 업로드 버튼과 파일 선택 이벤트를 제거했습니다.
+- 제공 캐릭터 PNG를 고정 경로로 사용합니다. PNG 파일도 저장소 루트에 함께 올려야 합니다.
+
+### 한 화면 중심 UI
+- 데스크톱(너비 1024px 이상, 높이 700px 이상)은 출석부, 캐릭터 성장/EXP, 영상 영역을 한 화면에 배치하도록 간격과 캐릭터 스테이지를 압축했습니다.
+- 작은 화면 또는 낮은 화면 높이에서는 콘텐츠가 잘리지 않도록 자연스러운 스크롤을 유지합니다.
+- 데스크톱 공간 확보를 위해 주간 라인업 미리보기와 푸터를 숨겼습니다.
+
+### 유튜브 오류 대응
+- IFrame API의 `onError` 이벤트를 처리해 오류 코드 2, 5, 100, 101, 150, 153에 맞는 메시지를 표시합니다.
+- 삭제/비공개 영상이나 외부 임베드가 차단된 영상은 앱 내부에서 강제로 재생할 수 없습니다. 오류 안내에서 원본 YouTube 링크를 열 수 있습니다.
+- 오류 153은 Referer 누락과 관련될 수 있으므로 GitHub Pages 등 HTTP(S) 서버에서 실행하세요. 각 영상의 임베드 허용 여부는 영상 소유자의 설정에 따릅니다.
+
+## ✨ 주요 구현 기능 (Key Features)
+
+### 1. 🥋 나만의 실사풍 전사 캐릭터 & 5단계 시각적 진화 (Aura Evolution)
+- **커스텀 전사 아바타 적용**: 사용자의 얼굴을 반영하여 재창조한 실사풍 3D 근육질 무도가 캐릭터(`Gemini_Generated_Image_1j5srk1j5srk1j5s-removebg-preview.png`)를 메인 스테이지에 배치했습니다.
+- **레벨업에 따른 실시간 외형 & 오라(Aura) 변화**:
+  - **LV.1 (초급 레드 전사)**: 기본 투기 상태
+  - **LV.2 (각성한 크림슨 파이터)**: 붉은 기운(Crimson Ki) 발현 및 근육 스케일 증가
+  - **LV.3 (폭염의 마스터 전사)**: 타오르는 화염 오라(Blazing Flame) 이펙트
+  - **LV.4 (초월 크림슨 버서커)**: 초전사 황금·크림슨 스파크 각성
+  - **LV.5+ (갓 사이언 레전드)**: 신성 초월 회전 오라 및 최고조 기(Ki) 파티클 방출
+- **각성 미리보기**: `각성 미리보기` 버튼으로 1~5단계 진화 모습을 즉시 체험할 수 있습니다. 캐릭터 이미지는 제공된 PNG로 고정됩니다.
+
+### 2. 📅 주간 전사 수련 출석부 & 7종 루틴 자동 순환 시스템
+- **요일별 부위 분할 루틴 (월~일 7일 구성)**:
+  - **월요일**: 전신 칼리스데닉스 (상체 폭발력 & 협응력)
+  - **화요일**: 식스팩 복근 폭격 (무도구 코어 타격)
+  - **수요일**: 하체 & 코어 파워 (대퇴사두근 & 둔근)
+  - **목요일**: 가슴 & 상체 갑옷 (변형 푸쉬업 대흉근 조각)
+  - **금요일**: 초고강도 체지방 연소 (파이어 HIIT 다이어트)
+  - **토요일**: 실전 스트릿 근력 (한계 돌파 칼리스데닉스)
+  - **일요일**: 층간소음 제로 스탠딩 카디오 & 리커버리
+- **주간 로테이션 갱신**: `다음 주 신메뉴 7종 갱신` 버튼을 클릭하면 다음 주차의 새로운 글로벌 7가지 운동 라인업으로 즉시 순환되어 지루함 없이 운동을 지속할 수 있습니다.
+
+### 3. 🎬 글로벌 50만 ~ 3,100만+ 조회수 바이럴 홈트레이닝 쇼츠 연동
+- 유튜브 쇼츠(YouTube Shorts) 및 릴스(Reels)에서 **최소 50만 뷰 이상 ~ 최대 3,120만 뷰 이상**을 기록한 해외 화제의 홈트레이닝 영상 14종(2주 분량)을 큐레이션하여 탑재했습니다.
+- **YouTube IFrame Player API 연동**:
+  - 영상을 재생하면 실시간으로 시청 진행률 게이지(`0% ~ 100%`)가 자동으로 차오릅니다.
+  - 또는 **`함께 따라하기 수련 타이머 시작`** 버튼을 눌러도 영상 재생과 함께 수련 게이지가 충전됩니다.
+- **완료 보상 및 레벨업**:
+  - 게이지가 `100%`에 도달하면 출석 도장이 찍히며 **경험치(`+120 ~ +160 EXP`)**와 **전투력(`Combat Power`)**, **4대 스탯(`STR 근력`, `VIT 코어`, `AGI 민첩`, `KI 투기`)**이 영구 상승합니다.
+
+### 4. ☁️ 클라우드 실시간 진행 상황 저장 & 멀티 디바이스(PC/모바일) 이어하기
+- **Firebase Firestore 실시간 연동**:
+  - 운동 완료, 출석 체크, 레벨업, 주차 변경 시 모든 진행 데이터가 즉시 클라우드에 자동 저장됩니다.
+- **기기 간 연동 코드 (전사 암호코드) 지원**:
+  - 상단 헤더의 **`클라우드 동기화됨 / 기기 연동 코드`** 버튼을 눌러 나만의 전사 코드(예: `saiyan-777`)를 입력하면, PC에서 키운 캐릭터 레벨과 출석 기록을 스마트폰에서도 그대로 불러와 이어서 플레이할 수 있습니다.
+
+### 5. 📱 완벽한 반응형 웹 디자인 & RPG 사운드 이펙트
+- **Tailwind CSS 기반 반응형 UI**: 스마트폰(세로형 9:16 쇼츠 최적화), 태블릿, 데스크톱 와이드 모니터까지 모든 해상도에 맞춰 레이아웃이 유연하게 최적화됩니다.
+- **Tone.js 신디사이저 효과음**: 별도의 외부 오디오 파일 없이 Web Audio API(`Tone.js`)를 활용해 버튼 클릭음, 수련 완료음, 레벨업 팡파레 사운드를 구현했습니다.
+
+---
+
+## 📂 파일 구조 (Project Structure)
+
+```text
+1027_vibeclass/
+├── index.html                                                  # 메인 웹 애플리케이션 (HTML5 + Tailwind CSS + JS + Firebase 연동 통합본)
+├── Gemini_Generated_Image_1j5srk1j5srk1j5s-removebg-preview.png # 메인 전사 캐릭터 이미지 (배경 투명 PNG)
+└── README.md                                                   # 프로젝트 상세 설명서
+```
+
+---
+
+## 🚀 GitHub 업로드 방법 (Git Push Guide)
+
+보안 정책상 AI 샌드박스 환경에서 개인 GitHub 계정으로 직접 푸시(Push) 인증을 수행할 수 없으므로, 아래 명령어를 PC 터미널(또는 Git Bash / VS Code 터미널)에 복사해 실행하시면 **`https://github.com/MaRaJoa777/1027_vibeclass.git`** 저장소에 즉시 업로드됩니다.
+
+```bash
+# 1. 프로젝트 폴더로 이동 (index.html, README.md, 캐릭터 PNG 파일이 있는 폴더)
+git init
+
+# 2. 원격 저장소 연결
+git remote add origin https://github.com/MaRaJoa777/1027_vibeclass.git
+
+# 3. 변경된 모든 파일 스테이징 및 커밋
+git add index.html README.md Gemini_Generated_Image_1j5srk1j5srk1j5s-removebg-preview.png
+git commit -m "feat: 사이언 핏 RPG 홈트레이닝 웹앱 및 클라우드 기기 연동 기능 구현"
+
+# 4. main 브랜치로 푸시
+git branch -M main
+git push -u origin main
+```
+
+---
+
+## 🛠️ 기술 스택 (Tech Stack)
+- **Frontend**: HTML5, CSS3 (Custom Keyframe Aura Animations), Tailwind CSS (CDN)
+- **Icons & Typography**: FontAwesome 6.5, Google Fonts (`Orbitron`, `Noto Sans KR`, `Black Han Sans`)
+- **Media & Audio**: YouTube IFrame API, Tone.js (Web Audio Synthesizer)
+- **Cloud Database & Auth**: Firebase v11.6.1 (Authentication & Cloud Firestore)
