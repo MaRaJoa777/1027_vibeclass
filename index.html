@@ -199,24 +199,14 @@
             100% { background-position: 200% 0; }
         }
 
-        /* Compact single-screen desktop dashboard. Small screens retain natural scrolling. */
-        @media (min-width: 1024px) and (min-height: 700px) {
-            html, body { height: 100%; overflow: hidden; }
-            body { min-height: 0 !important; }
-            header { flex: 0 0 auto; padding-top: .45rem !important; padding-bottom: .45rem !important; }
-            main { height: calc(100dvh - 64px); max-height: calc(100dvh - 64px); overflow: hidden; padding-top: .55rem !important; padding-bottom: .55rem !important; gap: .55rem !important; }
-            main > section { padding: .6rem !important; }
-            main > section > div:first-child { margin-bottom: .45rem !important; }
-            .grid.grid-cols-1.lg\:grid-cols-12 { min-height: 0; flex: 1; gap: .6rem !important; }
-            .grid.grid-cols-1.lg\:grid-cols-12 > section { min-height: 0; gap: .5rem !important; }
-            .grid.grid-cols-1.lg\:grid-cols-12 > section > .rpg-panel { min-height: 0; height: 100%; padding: .7rem !important; gap: .55rem !important; }
-            #characterStage { height: min(43vh, 350px) !important; padding: .35rem !important; }
-            #mainCharacterImg { max-height: min(37vh, 300px) !important; }
-            #weeklyLineupPills, .grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3 { display: none !important; }
-            footer { display: none; }
-        }
-        @media (max-width: 1023px), (max-height: 699px) {
-            body { overflow-y: auto; }
+        /* Responsive dashboard: scroll instead of clipping content on desktop. */
+        html, body { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+        body { min-height: 100vh; }
+        main { height: auto; max-height: none; overflow: visible; }
+        @media (min-width: 1024px) {
+            main { gap: 1rem !important; padding-top: 1rem !important; padding-bottom: 1.5rem !important; }
+            #characterStage { height: min(42vh, 360px) !important; }
+            #mainCharacterImg { max-height: min(36vh, 320px) !important; }
         }
     </style>
 </head>
@@ -275,42 +265,18 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-6">
+    <main class="max-w-7xl w-full mx-auto px-4 py-4 flex-1 flex flex-col gap-4">
 
-        <!-- WEEKLY ATTENDANCE BOARD (주간 출석부 & 로테이션 제어) -->
-        <section class="rpg-panel rounded-2xl p-4 sm:p-5 border border-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
-                        <i class="fa-solid fa-scroll"></i>
-                    </span>
-                    <div>
-                        <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                            주간 전사 수련 출석부
-                            <span id="rotationBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                                제 1주차 글로벌 챌린지
-                            </span>
-                        </h2>
-                        <p class="text-xs text-slate-400">요일을 선택하면 해당 요일의 해외 화제 홈트레이닝 루틴으로 즉시 전환됩니다.</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 self-start sm:self-auto">
-                    <button id="btnRotateWeek" class="rpg-btn bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 border border-indigo-400/30">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                        <span>다음 주 신메뉴 7종 갱신</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 7 Days Grid -->
-            <div id="weeklyAttendanceGrid" class="grid grid-cols-7 gap-1.5 sm:gap-3">
-                <!-- Populated dynamically by JS -->
-            </div>
-        </section>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <button id="btnOpenAttendanceModal" type="button" class="rpg-btn bg-slate-900 hover:bg-slate-800 border border-rose-500/40 text-white rounded-xl px-4 py-2.5 text-sm font-bold flex items-center gap-2">
+                <i class="fa-solid fa-calendar-check text-rose-400"></i><span>주간 출석 정보</span>
+                <span id="attendanceSummaryBadge" class="rounded-full bg-rose-600/20 border border-rose-500/30 px-2 py-0.5 text-xs text-rose-300">0 / 7일</span>
+            </button>
+            <p class="text-xs text-slate-400">출석 현황은 버튼을 눌러 확인할 수 있습니다.</p>
+        </div>
 
         <!-- MAIN DUAL LAYOUT: Left (Character RPG) / Right (Viral Shorts Workout) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
 
             <!-- LEFT COLUMN: CHARACTER STATUS & VISUAL EVOLUTION (5 Cols on Desktop) -->
             <section class="lg:col-span-5 flex flex-col gap-5">
@@ -444,7 +410,7 @@
                             </div>
                             <div class="flex items-center justify-between w-full max-w-[320px] mt-2 text-xs text-slate-400 px-1">
                                 <span><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>영상을 재생하며 동작을 따라하세요</span>
-                                <a id="externalYoutubeLink" href="https://www.youtube.com/shorts/aRewl4eJ2LQ" target="_blank" rel="noopener noreferrer" class="text-rose-400 hover:underline font-bold flex items-center gap-1">
+                                <a id="externalYoutubeLink" href="https://www.youtube.com/watch?v=ApwMgBmRzmE" target="_blank" rel="noopener noreferrer" class="text-rose-400 hover:underline font-bold flex items-center gap-1">
                                     <span>원본 쇼츠 새창</span>
                                     <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                                 </a>
@@ -631,6 +597,47 @@
         </div>
     </footer>
 
+
+    <!-- Weekly Attendance Modal -->
+    <div id="attendanceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="attendanceModalTitle">
+      <div class="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-950 p-4 sm:p-6 shadow-2xl">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <div><h2 id="attendanceModalTitle" class="text-lg sm:text-xl font-black text-white">주간 전사 수련 출석 현황</h2><p class="text-xs text-slate-400 mt-1">요일을 선택하면 해당 운동 루틴으로 전환됩니다.</p></div>
+          <button id="btnCloseAttendanceModal" type="button" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-300 hover:bg-slate-800"><i class="fa-solid fa-xmark"></i> 닫기</button>
+        </div>
+        <section class="rpg-panel rounded-2xl p-4 sm:p-5 border border-slate-800 w-full max-w-4xl max-h-[85vh] overflow-y-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                        <i class="fa-solid fa-scroll"></i>
+                    </span>
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                            주간 전사 수련 출석부
+                            <span id="rotationBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                제 1주차 글로벌 챌린지
+                            </span>
+                        </h2>
+                        <p class="text-xs text-slate-400">요일을 선택하면 해당 요일의 해외 화제 홈트레이닝 루틴으로 즉시 전환됩니다.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <button id="btnRotateWeek" class="rpg-btn bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 border border-indigo-400/30">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>다음 주 신메뉴 7종 갱신</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7 Days Grid -->
+            <div id="weeklyAttendanceGrid" class="grid grid-cols-7 gap-1.5 sm:gap-3">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </section>
+      </div>
+    </div>
+
     <!-- Application Logic -->
     <script>
         /**************************************************************
@@ -648,7 +655,7 @@
                     title: "해외 조회수 3,120만! 맨몸 전신 각성 루틴",
                     channel: "@VIS Calisthenics",
                     views: "3,123만회",
-                    videoId: "aRewl4eJ2LQ",
+                    videoId: "ApwMgBmRzmE",
                     expReward: 120,
                     targetMuscle: "전신 협응력 & 상체 폭발력",
                     setsGuide: "영상 속 동작 12회씩 × 3세트 반복",
@@ -901,26 +908,42 @@
         let ytPlayer = null;
         let ytMonitorInterval = null;
 
+
+        let usedVideoFallback = false;
         function showVideoError(code) {
             const box = document.getElementById('youtubePlayerBox');
-            const messages = {
-                2: '유튜브 영상 ID가 올바르지 않습니다. 원본 쇼츠를 새 창에서 확인해 주세요.',
-                5: '브라우저에서 HTML5 영상 재생 오류가 발생했습니다.',
-                100: '영상이 삭제되었거나 비공개 상태입니다.',
-                101: '이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',
-                150: '이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',
-                153: '유튜브가 재생 요청의 출처(Referer)를 확인하지 못했습니다. GitHub Pages 등 웹 서버에서 열어 주세요.'
-            };
+            const link = document.getElementById('externalYoutubeLink');
+            const fallbackId = 'ApwMgBmRzmE';
+            const messages = {2:'원래 영상 ID가 올바르지 않습니다.',5:'브라우저 HTML5 재생 오류가 발생했습니다.',100:'원래 영상이 삭제되었거나 비공개 상태입니다.',101:'원래 영상은 외부 사이트 재생을 허용하지 않습니다.',150:'원래 영상은 외부 사이트 재생을 허용하지 않습니다.',153:'유튜브가 임베드 요청의 출처를 확인하지 못했습니다.'};
             if (!box) return;
-            box.innerHTML = `<div class="h-full w-full flex flex-col items-center justify-center gap-3 p-4 text-center bg-slate-950 text-white"><i class="fa-brands fa-youtube text-rose-500 text-3xl"></i><p class="text-sm font-bold">유튜브 영상 재생 불가 (오류 ${code})</p><p class="text-xs text-slate-300">${messages[code] || '영상 재생에 실패했습니다. 원본 영상 링크를 이용해 주세요.'}</p><a class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold" target="_blank" rel="noopener noreferrer" href="${document.getElementById('externalYoutubeLink').href}">유튜브에서 영상 보기</a></div>`;
+            if (!usedVideoFallback) {
+                usedVideoFallback = true;
+                stopYoutubeWatchMonitor();
+                if (link) link.href = 'https://www.youtube.com/watch?v=' + fallbackId;
+                box.innerHTML = '';
+                const frame = document.createElement('iframe');
+                frame.title = 'Popular full-body home workout';
+                frame.className = 'w-full h-full border-0';
+                frame.src = 'https://www.youtube-nocookie.com/embed/' + fallbackId + '?autoplay=0&controls=1&rel=0&playsinline=1&enablejsapi=1&origin=' + encodeURIComponent(window.location.origin);
+                frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+                frame.allowFullscreen = true;
+                frame.referrerPolicy = 'strict-origin-when-cross-origin';
+                box.appendChild(frame);
+                const note = document.createElement('div');
+                note.className = 'absolute bottom-0 left-0 right-0 bg-black/80 px-2 py-1 text-center text-[10px] text-amber-200 pointer-events-none';
+                note.textContent = '원본 영상 오류로 인기 전신 홈트 영상으로 전환했습니다.';
+                box.appendChild(note);
+                return;
+            }
+            box.innerHTML = '<div class="h-full w-full flex flex-col items-center justify-center gap-3 p-4 text-center bg-slate-950 text-white"><i class="fa-brands fa-youtube text-rose-500 text-3xl"></i><p class="text-sm font-bold">유튜브 영상 재생 오류 (' + code + ')</p><p class="text-xs text-slate-300">' + (messages[code] || '이 영상은 임베드 재생을 지원하지 않을 수 있습니다.') + '</p><a class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=' + fallbackId + '">유튜브에서 영상 보기</a></div>';
         }
 
         function onYouTubeIframeAPIReady() {
             const currentWorkout = getCurrentWorkout();
             ytPlayer = new YT.Player('youtubePlayerBox', {
                 height: '100%', width: '100%', videoId: currentWorkout.videoId,
-                playerVars: { autoplay: 0, controls: 1, rel: 0, playsinline: 1, enablejsapi: 1 },
-                events: { onStateChange: onPlayerStateChange, onError: (event) => showVideoError(event.data) }
+                playerVars: { autoplay: 0, controls: 1, rel: 0, playsinline: 1, enablejsapi: 1, origin: window.location.origin, widget_referrer: window.location.href },
+                events: { onReady: (event) => { try { event.target.setSize('100%', '100%'); } catch (_) {} }, onStateChange: onPlayerStateChange, onError: (event) => showVideoError(event.data) }
             });
         }
 
@@ -1000,6 +1023,32 @@
             }
         }
 
+
+        function openAttendanceModal() {
+            const modal = document.getElementById('attendanceModal');
+            if (!modal) return;
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+        }
+        function closeAttendanceModal() {
+            const modal = document.getElementById('attendanceModal');
+            if (!modal) return;
+            modal.classList.add('hidden'); modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+        }
+        function initAttendanceModal() {
+            document.getElementById('btnOpenAttendanceModal')?.addEventListener('click', openAttendanceModal);
+            document.getElementById('btnCloseAttendanceModal')?.addEventListener('click', closeAttendanceModal);
+            document.getElementById('attendanceModal')?.addEventListener('click', event => { if (event.target.id === 'attendanceModal') closeAttendanceModal(); });
+            document.addEventListener('keydown', event => { if (event.key === 'Escape') closeAttendanceModal(); });
+            try {
+                if (!sessionStorage.getItem('saiyanFitAttendanceIntroShown')) {
+                    openAttendanceModal();
+                    sessionStorage.setItem('saiyanFitAttendanceIntroShown', '1');
+                }
+            } catch (_) { openAttendanceModal(); }
+        }
+
         function renderWeeklyAttendance() {
             const grid = document.getElementById('weeklyAttendanceGrid');
             if (!grid) return;
@@ -1050,6 +1099,8 @@
             const attendedCount = state.attendance.filter(Boolean).length;
             const hudAttendanceEl = document.getElementById('hudAttendanceCount');
             if (hudAttendanceEl) hudAttendanceEl.textContent = `${attendedCount} / 7일`;
+            const summaryBadge = document.getElementById('attendanceSummaryBadge');
+            if (summaryBadge) summaryBadge.textContent = `${attendedCount} / 7일`;
             const rotationBadgeEl = document.getElementById('rotationBadge');
             if (rotationBadgeEl) rotationBadgeEl.textContent = `제 ${state.weekSetIndex + 1}주차 글로벌 챌린지`;
         }
@@ -1472,6 +1523,7 @@
 
         // Setup Modal UI Listeners
         window.addEventListener('DOMContentLoaded', () => {
+            initAttendanceModal();
             initCloudPersistence();
 
             const cloudModal = document.getElementById('cloudSyncModal');
