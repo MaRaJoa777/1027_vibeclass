@@ -199,22 +199,20 @@
             100% { background-position: 200% 0; }
         }
 
-        @media (min-width: 1024px) and (min-height: 700px) {
-            html, body { height: 100%; overflow: hidden; }
-            body { min-height: 0 !important; }
-            header { flex: 0 0 auto; padding-top: .45rem !important; padding-bottom: .45rem !important; }
-            main { height: calc(100dvh - 64px); max-height: calc(100dvh - 64px); overflow: hidden; padding-top: .55rem !important; padding-bottom: .55rem !important; gap: .55rem !important; }
-            main > section { padding: .6rem !important; }
-            .grid.grid-cols-1.lg\\:grid-cols-12 { min-height: 0; flex: 1; gap: .6rem !important; }
-            .grid.grid-cols-1.lg\\:grid-cols-12 > section { min-height: 0; gap: .5rem !important; }
-            .grid.grid-cols-1.lg\\:grid-cols-12 > section > .rpg-panel { min-height: 0; height: 100%; padding: .7rem !important; gap: .55rem !important; }
-            #characterStage { height: min(43vh, 350px) !important; padding: .35rem !important; }
-            #mainCharacterImg { max-height: min(37vh, 300px) !important; }
-            #weeklyLineupPills { display: none !important; }
-            footer { display: none; }
-        }
-        @media (max-width: 1023px), (max-height: 699px) { body { overflow-y: auto; } }
-    </style>
+@media (min-width: 1024px) and (min-height: 700px) {
+ html, body { height:100%; overflow:hidden; } body { min-height:0 !important; }
+ header { flex:0 0 auto; padding-top:.45rem !important; padding-bottom:.45rem !important; }
+ main { height:calc(100dvh - 64px); max-height:calc(100dvh - 64px); overflow:hidden; padding-top:.55rem !important; padding-bottom:.55rem !important; gap:.55rem !important; }
+ main > section { padding:.6rem !important; }
+ .grid.grid-cols-1.lg\\:grid-cols-12 { min-height:0; flex:1; gap:.6rem !important; }
+ .grid.grid-cols-1.lg\\:grid-cols-12 > section { min-height:0; gap:.5rem !important; }
+ .grid.grid-cols-1.lg\\:grid-cols-12 > section > .rpg-panel { min-height:0; height:100%; padding:.7rem !important; gap:.55rem !important; }
+ #characterStage { height:min(43vh, 350px) !important; padding:.35rem !important; }
+ #mainCharacterImg { max-height:min(37vh, 300px) !important; }
+ #weeklyLineupPills { display:none !important; } footer { display:none; }
+}
+@media (max-width:1023px), (max-height:699px) { body { overflow-y:auto; } }
+</style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-rose-600 selection:text-white">
 
@@ -266,7 +264,9 @@
                         <div class="text-[11px] text-slate-300 font-semibold hidden md:block">기기 연동 코드</div>
                     </div>
                 </button>
-</div>
+
+
+            </div>
         </div>
     </header>
 
@@ -357,8 +357,7 @@
                         />
 
                         <!-- Pedestal / Ground Glow -->
-                        <div class="w-56 h-5 bg-rose-600/30 rounded-full blur-md -mt-2 z-0"></div>
-                    </div>
+                        <div class="w-56 h-5 bg-rose-600/30 rounded-full blur-md -mt-2 z-0"></div>                    </div>
 
                     <!-- EXP Bar & RPG Attributes -->
                     <div class="p-5 bg-slate-950/60 border-t border-slate-800/80 flex flex-col gap-4">
@@ -707,8 +706,7 @@
                     setsGuide: "30초 전력 수행 + 10초 호흡 × 4세트",
                     desc: "짧은 시간 안에 심박수를 끌어올려 칼로리를 태워버리는 해외 바이럴 1위 다이어트 루틴입니다."
                 },
-                {
-                    dayIndex: 5,
+                {                    dayIndex: 5,
                     dayShort: "토",
                     dayName: "토요일",
                     category: "실전 스트릿 근력",
@@ -902,24 +900,16 @@
 
         function showVideoError(code) {
             const box = document.getElementById('youtubePlayerBox');
-            const messages = {
-                2: '유튜브 영상 ID가 올바르지 않습니다.',
-                5: '브라우저에서 HTML5 영상 재생 오류가 발생했습니다.',
-                100: '영상이 삭제되었거나 비공개 상태입니다.',
-                101: '이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',
-                150: '이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',
-                153: '유튜브가 재생 요청의 출처(Referer)를 확인하지 못했습니다. GitHub Pages 등 웹 서버에서 열어 주세요.'
-            };
+            const messages = {2:'유튜브 영상 ID가 올바르지 않습니다.',5:'브라우저에서 HTML5 영상 재생 오류가 발생했습니다.',100:'영상이 삭제되었거나 비공개 상태입니다.',101:'이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',150:'이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',153:'유튜브가 출처(Referer)를 확인하지 못했습니다. GitHub Pages 등 웹 서버에서 열어 주세요.'};
             if (!box) return;
-            box.innerHTML = `<div class="h-full w-full flex flex-col items-center justify-center gap-3 p-4 text-center bg-slate-950 text-white"><i class="fa-brands fa-youtube text-rose-500 text-3xl"></i><p class="text-sm font-bold">유튜브 영상 재생 불가 (오류 ${code})</p><p class="text-xs text-slate-300">${messages[code] || '영상 재생에 실패했습니다. 원본 영상 링크를 이용해 주세요.'}</p><a class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold" target="_blank" rel="noopener noreferrer" href="${document.getElementById('externalYoutubeLink').href}">유튜브에서 영상 보기</a></div>`;
+            box.innerHTML = `<div class="h-full w-full flex flex-col items-center justify-center gap-3 p-4 text-center bg-slate-950 text-white"><i class="fa-brands fa-youtube text-rose-500 text-3xl"></i><p class="text-sm font-bold">유튜브 영상 재생 불가 (오류 ${code})</p><p class="text-xs text-slate-300">${messages[code] || '영상 재생에 실패했습니다.'}</p><a class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold" target="_blank" rel="noopener noreferrer" href="${document.getElementById('externalYoutubeLink').href}">유튜브에서 영상 보기</a></div>`;
         }
-
         function onYouTubeIframeAPIReady() {
             const currentWorkout = getCurrentWorkout();
             ytPlayer = new YT.Player('youtubePlayerBox', {
-                height: '100%', width: '100%', videoId: currentWorkout.videoId,
-                playerVars: { autoplay: 0, controls: 1, rel: 0, playsinline: 1, enablejsapi: 1 },
-                events: { onStateChange: onPlayerStateChange, onError: (event) => showVideoError(event.data) }
+                height:'100%', width:'100%', videoId:currentWorkout.videoId,
+                playerVars:{autoplay:0,controls:1,rel:0,playsinline:1,enablejsapi:1},
+                events:{onStateChange:onPlayerStateChange,onError:(event)=>showVideoError(event.data)}
             });
         }
 
@@ -1012,3 +1002,520 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = `rpg-btn rounded-xl p-2 sm:p-3 border flex flex-col items-center justify-between gap-1.5 transition text-center relative ${
+                    isSelected 
+                        ? 'bg-gradient-to-b from-rose-600/30 to-slate-900 border-rose-500 shadow-lg shadow-rose-600/20' 
+                        : isAttended 
+                            ? 'bg-slate-900/90 border-amber-500/50 hover:border-amber-400' 
+                            : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
+                }`;
+
+                btn.innerHTML = `
+                    <div class="flex items-center justify-between w-full px-0.5">
+                        <span class="text-[11px] font-extrabold ${isSelected ? 'text-rose-400' : 'text-slate-400'}">${item.dayShort}</span>
+                        ${isAttended 
+                            ? '<i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>' 
+                            : '<span class="w-2 h-2 rounded-full bg-slate-700"></span>'}
+                    </div>
+                    <div class="my-1">
+                        ${isAttended 
+                            ? '<div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-300 text-sm sm:text-base font-black shadow-inner"><i class="fa-solid fa-stamp"></i></div>'
+                            : `<div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full ${isSelected ? 'bg-rose-500/20 border-rose-500/50 text-rose-300' : 'bg-slate-800 text-slate-500'} border flex items-center justify-center text-xs sm:text-sm"><i class="fa-solid fa-dumbbell"></i></div>`
+                        }
+                    </div>
+                    <div class="text-[10px] sm:text-xs font-bold truncate w-full ${isSelected ? 'text-white' : 'text-slate-400'}">
+                        ${item.category.split(' ')[0]}
+                    </div>
+                `;
+
+                btn.addEventListener('click', () => {
+                    playSoundEffect('click');
+                    selectDay(idx);
+                });
+
+                grid.appendChild(btn);
+            });
+
+            // Update HUD attendance counter
+            const attendedCount = state.attendance.filter(Boolean).length;
+            const hudAttendanceEl = document.getElementById('hudAttendanceCount');
+            if (hudAttendanceEl) hudAttendanceEl.textContent = `${attendedCount} / 7일`;
+            const rotationBadgeEl = document.getElementById('rotationBadge');
+            if (rotationBadgeEl) rotationBadgeEl.textContent = `제 ${state.weekSetIndex + 1}주차 글로벌 챌린지`;
+        }
+
+        function renderWeeklyLineupPills() {
+            const container = document.getElementById('weeklyLineupPills');
+            if (!container) return;
+            const currentSet = WEEKLY_ROTATION_SETS[state.weekSetIndex];
+            container.innerHTML = '';
+
+            currentSet.forEach((item, idx) => {
+                const isSelected = idx === state.selectedDayIndex;
+                const isDone = state.attendance[idx];                const div = document.createElement('div');
+                div.className = `cursor-pointer rounded-xl px-3 py-2 border text-xs flex items-center justify-between transition ${
+                    isSelected 
+                        ? 'bg-rose-950/50 border-rose-500 text-white' 
+                        : 'bg-slate-900/70 border-slate-800/90 text-slate-300 hover:border-slate-700'
+                }`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 truncate pr-2">
+                        <span class="font-extrabold ${isSelected ? 'text-rose-400' : 'text-slate-400'}">${item.dayShort}</span>
+                        <span class="truncate font-medium">${item.category}</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${isDone ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-400'} shrink-0">
+                        ${isDone ? '완료' : item.views}
+                    </span>
+                `;
+                div.addEventListener('click', () => selectDay(idx));
+                container.appendChild(div);
+            });
+        }
+
+        function renderQuestDetails() {
+            const workout = getCurrentWorkout();
+            document.getElementById('questDayTag').textContent = `${workout.dayName} 퀘스트`;
+            document.getElementById('questCategoryTag').textContent = workout.category;
+            document.getElementById('questViewsBadge').innerHTML = `<i class="fa-brands fa-youtube text-rose-500"></i> 조회수 ${workout.views} 돌파!`;
+            document.getElementById('questTitle').textContent = workout.title;
+            document.getElementById('questChannel').textContent = `크리에이터: ${workout.channel} • 글로벌 50만+ 뷰 검증 홈트레이닝`;
+            document.getElementById('questExpReward').textContent = `+${workout.expReward} EXP`;
+            document.getElementById('questTargetMuscle').textContent = workout.targetMuscle;
+            document.getElementById('questDescription').textContent = workout.desc;
+            document.getElementById('questSetsGuide').textContent = workout.setsGuide;
+            document.getElementById('externalYoutubeLink').href = `https://www.youtube.com/shorts/${workout.videoId}`;
+
+            // Reset progress for new workout video
+            stopCompanionTimer();
+            setWatchProgress(0);
+
+            if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                ytPlayer.loadVideoById(workout.videoId);
+            }
+        }
+
+        function renderCharacterStatus() {
+            const activeLv = state.previewAuraLevel || state.level;
+            const auraInfo = [...AURA_TITLES].reverse().find(a => activeLv >= a.minLv) || AURA_TITLES[0];
+
+            // Stage Class
+            const stage = document.getElementById('characterStage');
+            if (stage) {
+                stage.className = `character-stage ${auraInfo.classKey} h-[390px] sm:h-[440px] flex flex-col items-center justify-end p-4 relative select-none`;
+            }
+
+            // Titles & Badges
+            const charClassEl = document.getElementById('charClassTitle');
+            if (charClassEl) charClassEl.textContent = auraInfo.title;
+            const charLevelEl = document.getElementById('charLevelBadge');
+            if (charLevelEl) charLevelEl.textContent = `LV.${state.level}`;
+            const auraStageEl = document.getElementById('auraStageName');
+            if (auraStageEl) {
+                auraStageEl.textContent = state.previewAuraLevel 
+                    ? `${auraInfo.auraName} [미리보기 중]` 
+                    : auraInfo.auraName;
+            }
+
+            // Combat Power & Stats
+            const cpEl = document.getElementById('hudCombatPower');
+            if (cpEl) cpEl.textContent = state.combatPower.toLocaleString();
+            const strEl = document.getElementById('statSTR');
+            if (strEl) strEl.textContent = state.stats.str;
+            const vitEl = document.getElementById('statVIT');
+            if (vitEl) vitEl.textContent = state.stats.vit;
+            const agiEl = document.getElementById('statAGI');
+            if (agiEl) agiEl.textContent = state.stats.agi;
+            const kiEl = document.getElementById('statKI');
+            if (kiEl) kiEl.textContent = state.stats.ki;
+
+            // EXP Bar
+            const expPercent = Math.min(100, Math.floor((state.exp / state.expToNext) * 100));
+            const expTextEl = document.getElementById('expText');
+            if (expTextEl) expTextEl.textContent = `${state.exp} / ${state.expToNext} EXP (${expPercent}%)`;
+            const expFillEl = document.getElementById('expBarFill');
+            if (expFillEl) expFillEl.style.width = `${expPercent}%`;
+
+            // Spawn Ki particles matching level intensity
+            renderKiParticles(activeLv);
+        }
+
+        function renderKiParticles(level) {
+            const container = document.getElementById('kiParticlesContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            const count = level * 6; // More particles as character grows stronger
+
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'ki-particle';
+                const size = Math.random() * (level * 3 + 4) + 4;
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                p.style.left = `${15 + Math.random() * 70}%`;
+                p.style.animationDuration = `${1.2 + Math.random() * 2}s`;
+                p.style.animationDelay = `${Math.random() * 2}s`;
+
+                if (level >= 4 && Math.random() > 0.5) {
+                    p.style.background = 'radial-gradient(circle, #fef08a 0%, #f59e0b 80%, transparent 100%)';
+                    p.style.boxShadow = '0 0 12px #f59e0b';
+                } else {
+                    p.style.background = 'radial-gradient(circle, #fecdd3 0%, #e11d48 80%, transparent 100%)';
+                    p.style.boxShadow = '0 0 10px #e11d48';
+                }
+                container.appendChild(p);
+            }
+        }
+
+        function selectDay(dayIdx) {
+            state.selectedDayIndex = dayIdx;
+            renderWeeklyAttendance();
+            renderWeeklyLineupPills();
+            renderQuestDetails();
+        }
+
+        /**************************************************************
+         * 6. WORKOUT TIMER & EXP CLAIM HANDLERS
+         **************************************************************/
+        function toggleCompanionTimer() {
+            const btn = document.getElementById('btnStartTimer');
+            if (state.isTimerRunning) {
+                stopCompanionTimer();
+                return;
+            }
+
+            state.isTimerRunning = true;
+            btn.innerHTML = `<i class="fa-solid fa-pause"></i><span>수련 타이머 진행 중... (클릭 시 일시정지)</span>`;
+            btn.className = "rpg-btn w-full py-3 px-4 rounded-xl font-bold text-sm bg-amber-500 text-slate-950 shadow-lg flex items-center justify-center gap-2";
+
+            // Also play YouTube video if ready
+            if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                try { ytPlayer.playVideo(); } catch (e) {}
+            }
+
+            state.timerInterval = setInterval(() => {
+                if (state.watchProgress < 100) {
+                    setWatchProgress(state.watchProgress + 7);
+                } else {
+                    stopCompanionTimer();
+                    playSoundEffect('complete');
+                }
+            }, 800);
+        }
+
+        function stopCompanionTimer() {
+            state.isTimerRunning = false;
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+            const btn = document.getElementById('btnStartTimer');
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-stopwatch"></i><span>함께 따라하기 수련 타이머 시작 (15초)</span>`;
+                btn.className = "rpg-btn w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white shadow-lg shadow-rose-600/25 flex items-center justify-center gap-2";
+            }
+        }
+
+        function claimWorkoutReward() {
+            if (state.watchProgress < 100) return;
+
+            const workout = getCurrentWorkout();
+            const expGain = workout.expReward;
+            const powerGain = 650 + (state.level * 150);
+
+            // Mark today's attendance
+            state.attendance[state.selectedDayIndex] = true;
+
+            // Add EXP & Check Level Up
+            state.exp += expGain;
+            state.combatPower += powerGain;
+            let leveledUp = false;
+
+            while (state.exp >= state.expToNext) {
+                state.exp -= state.expToNext;
+                state.level += 1;
+                state.expToNext = Math.floor(state.expToNext * 1.25);
+                state.stats.str += 5;
+                state.stats.vit += 4;
+                state.stats.agi += 4;
+                state.stats.ki += 7;
+                leveledUp = true;
+            }
+
+            // Reset preview aura so user sees their actual new aura
+            state.previewAuraLevel = null;
+
+            // Play Sound
+            playSoundEffect(leveledUp ? 'levelup' : 'complete');
+
+            // Update UI
+            setWatchProgress(0);
+            renderWeeklyAttendance();
+            renderWeeklyLineupPills();
+            renderCharacterStatus();
+
+            // Sync with Cloud automatically
+            if (typeof window.saveProgressToCloud === 'function') {
+                window.saveProgressToCloud();
+            }
+
+            // Show Modal
+            const modal = document.getElementById('rewardModal');
+            document.getElementById('modalBadge').textContent = leveledUp ? 'LEVEL UP AWAKENING!' : 'QUEST CLEAR!';
+            document.getElementById('modalTitle').textContent = leveledUp 
+                ? `레벨 업! LV.${state.level} 전사 각성!` 
+                : `${workout.dayName} 수련 퀘스트 완료!`;
+            document.getElementById('modalDesc').textContent = leveledUp
+                ? `축하합니다! 경험치가 가득 차 캐릭터의 근육 아우라와 전투력이 한 단계 진화했습니다!`
+                : `해외 화제의 [${workout.category}] 루틴을 끝까지 완주하여 출석 도장과 경험치를 획득했습니다!`;
+            document.getElementById('modalExpGain').textContent = `+${expGain} EXP`;
+            document.getElementById('modalPowerGain').textContent = `+${powerGain.toLocaleString()} CP`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        /**************************************************************
+         * 7. EVENT LISTENERS & INITIALIZATION
+         **************************************************************/
+        window.addEventListener('DOMContentLoaded', () => {
+            renderWeeklyAttendance();
+            renderWeeklyLineupPills();
+            renderQuestDetails();
+            renderCharacterStatus();
+
+            // Timer button
+            document.getElementById('btnStartTimer')?.addEventListener('click', toggleCompanionTimer);
+
+            // Claim EXP button
+            document.getElementById('btnClaimExp')?.addEventListener('click', claimWorkoutReward);
+
+            // Modal Close
+            document.getElementById('btnCloseModal')?.addEventListener('click', () => {
+                const modal = document.getElementById('rewardModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            });
+
+            // Rotate Weekly 7 Workouts Button
+            document.getElementById('btnRotateWeek')?.addEventListener('click', () => {
+                playSoundEffect('click');
+                state.weekSetIndex = (state.weekSetIndex + 1) % WEEKLY_ROTATION_SETS.length;
+                renderWeeklyAttendance();
+                renderWeeklyLineupPills();
+                renderQuestDetails();
+                if (typeof window.saveProgressToCloud === 'function') {
+                    window.saveProgressToCloud();
+                }
+            });
+
+            // Preview Aura Evolution Button
+            document.getElementById('btnPreviewAura')?.addEventListener('click', () => {
+                playSoundEffect('click');
+                if (!state.previewAuraLevel) {
+                    state.previewAuraLevel = 2;
+                } else if (state.previewAuraLevel < 5) {
+                    state.previewAuraLevel += 1;
+                } else {
+                    state.previewAuraLevel = null;
+                }
+                renderCharacterStatus();
+            });
+
+
+        });
+    </script>
+
+    <!-- Cloud Persistence Module (Firestore Real-Time Sync Across Devices) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'saiyan-fit-rpg-app';
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let activeSyncKey = null; // Defaults to user.uid or custom warrior code
+        let unsubscribeSnapshot = null;
+
+        function updateCloudBadge(statusText, isOnline) {
+            const dot = document.getElementById('cloudStatusDot');
+            const txt = document.getElementById('cloudStatusText');
+            if (!dot || !txt) return;
+            txt.textContent = statusText;
+            dot.className = isOnline
+                ? "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"
+                : "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
+        }
+
+        function showSyncFeedback(msg, isError = false) {
+            const el = document.getElementById('syncFeedbackMsg');
+            if (!el) return;
+            el.textContent = msg;
+            el.className = `text-xs font-semibold mt-1 ${isError ? 'text-rose-400' : 'text-emerald-400'}`;
+            el.classList.remove('hidden');
+        }
+
+        function getProfileDocRef(syncKey) {
+            if (syncKey && syncKey !== currentUser?.uid) {
+                return doc(db, 'artifacts', appId, 'public', 'data', 'warrior_profiles', syncKey);
+            }
+            return doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main');
+        }
+
+        async function saveProgressToCloud() {
+            if (!currentUser || !db) return;
+            try {
+                updateCloudBadge("저장 중...", false);
+                const docRef = getProfileDocRef(activeSyncKey);
+                const payload = {
+                    level: state.level,
+                    exp: state.exp,
+                    expToNext: state.expToNext,
+                    combatPower: state.combatPower,
+                    stats: state.stats,
+                    weekSetIndex: state.weekSetIndex,
+                    attendance: state.attendance,
+                    updatedAt: Date.now(),
+                    ownerUid: currentUser.uid
+                };
+                await setDoc(docRef, payload, { merge: true });
+                updateCloudBadge("클라우드 동기화됨", true);
+            } catch (err) {
+                console.error("Cloud Save Error:", err);
+                updateCloudBadge("오프라인 모드", false);
+            }
+        }
+
+        function subscribeToProfile(syncKey) {
+            if (!currentUser || !db) return;
+            if (unsubscribeSnapshot) {
+                unsubscribeSnapshot();
+            }
+            activeSyncKey = syncKey;
+            const docRef = getProfileDocRef(syncKey);
+
+            unsubscribeSnapshot = onSnapshot(
+                docRef,
+                (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+                        state.level = data.level ?? state.level;
+                        state.exp = data.exp ?? state.exp;
+                        state.expToNext = data.expToNext ?? state.expToNext;
+                        state.combatPower = data.combatPower ?? state.combatPower;
+                        if (data.stats) state.stats = data.stats;
+                        if (typeof data.weekSetIndex === 'number') state.weekSetIndex = data.weekSetIndex;
+                        if (Array.isArray(data.attendance) && data.attendance.length === 7) {
+                            state.attendance = data.attendance;
+                        }
+                        renderWeeklyAttendance();
+                        renderWeeklyLineupPills();
+                        renderCharacterStatus();
+                        updateCloudBadge("클라우드 동기화됨", true);
+                    } else {
+                        saveProgressToCloud();
+                    }
+                },
+                (err) => {
+                    console.error("Snapshot Listener Error:", err);
+                    updateCloudBadge("동기화 대기", false);
+                }
+            );
+        }
+
+        async function initCloudPersistence() {
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+                    updateCloudBadge("로컬 세션 모드", false);
+                    const idEl = document.getElementById('currentUserIdDisplay');
+                    if (idEl) idEl.textContent = "클라우드 설정 대기 중 (인메모리 동작)";
+                    return;
+                }
+
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (!user) return;
+                    currentUser = user;
+                    const displayEl = document.getElementById('currentUserIdDisplay');
+                    if (displayEl) displayEl.textContent = user.uid;
+
+                    subscribeToProfile(user.uid);
+                });
+            } catch (e) {
+                console.error("Firebase Init Error:", e);
+                updateCloudBadge("로컬 세션 모드", false);
+            }
+        }
+
+        // Expose save function globally
+        window.saveProgressToCloud = saveProgressToCloud;
+
+        // Setup Modal UI Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            initCloudPersistence();
+
+            const cloudModal = document.getElementById('cloudSyncModal');
+            document.getElementById('btnOpenCloudModal')?.addEventListener('click', () => {
+                cloudModal.classList.remove('hidden');
+                cloudModal.classList.add('flex');
+            });
+
+            document.getElementById('btnCloseCloudModal')?.addEventListener('click', () => {
+                cloudModal.classList.add('hidden');
+                cloudModal.classList.remove('flex');
+            });
+
+            document.getElementById('btnCopySyncCode')?.addEventListener('click', () => {
+                const codeText = document.getElementById('currentUserIdDisplay')?.textContent || '';
+                const tempInput = document.createElement('textarea');
+                tempInput.value = codeText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showSyncFeedback("고유 ID가 클립보드에 복사되었습니다!");
+            });
+
+            document.getElementById('btnApplySyncCode')?.addEventListener('click', async () => {
+                if (!currentUser || !db) {
+                    showSyncFeedback("클라우드 서버 연결 후 이용 가능합니다.", true);
+                    return;
+                }
+                const rawCode = document.getElementById('syncPasscodeInput')?.value.trim();
+                if (!rawCode || rawCode.length < 3) {
+                    showSyncFeedback("3글자 이상의 전사 암호코드를 입력해 주세요.", true);
+                    return;
+                }
+                const sanitizedKey = rawCode.replace(/[^a-zA-Z0-9_-]/g, '_');
+                const targetRef = getProfileDocRef(sanitizedKey);
+                const snap = await getDoc(targetRef);
+
+                subscribeToProfile(sanitizedKey);
+                document.getElementById('currentUserIdDisplay').textContent = `연동 코드: ${sanitizedKey}`;
+
+                if (snap.exists()) {
+                    showSyncFeedback(`[${sanitizedKey}] 전사 데이터를 성공적으로 불러왔습니다!`);
+                } else {
+                    await saveProgressToCloud();
+                    showSyncFeedback(`[${sanitizedKey}] 코드로 현재 전사 상태를 새로 등록했습니다! 다른 기기에서 이 코드를 입력하면 이어할 수 있습니다.`);
+                }
+            });
+
+            document.getElementById('btnManualSave')?.addEventListener('click', async () => {
+                await saveProgressToCloud();
+                showSyncFeedback("현재 캐릭터 레벨과 출석 기록이 즉시 클라우드에 저장되었습니다!");
+            });
+        });
+    </script>
+</body>
+</html>
