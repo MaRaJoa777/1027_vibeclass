@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAIYAN FIT : 전사 육성 홈트레이닝 RPG</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Tone.js for RPG Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                        title: ['Black Han Sans', 'sans-serif'],
+                        num: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        crimson: '#e11d48',
+                        gold: '#f59e0b',
+                        cyber: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #090d16;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(225, 29, 72, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 40%);
+            color: #f8fafc;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* Custom RPG Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e11d48;
+        }
+
+        /* Aura & Character Visual Effects by Level */
+        .character-stage {
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center 65%, rgba(30, 41, 59, 0.9) 0%, rgba(9, 13, 22, 0.95) 75%);
+        }
+
+        .character-img {
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.6s ease;
+            transform-origin: bottom center;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Level 1: Base */
+        .aura-lv-1 .character-img {
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.8));
+            transform: scale(0.96);
+        }
+
+        /* Level 2: Crimson Ki */
+        .aura-lv-2 .character-img {
+            filter: drop-shadow(0 0 18px rgba(239, 68, 68, 0.75)) contrast(1.05);
+            transform: scale(1.0);
+        }
+        .aura-lv-2 .aura-ring {
+            opacity: 0.45;
+            background: radial-gradient(circle, rgba(239,68,68,0.6) 0%, transparent 70%);
+            animation: pulseAura 2.2s infinite ease-in-out;
+        }
+
+        /* Level 3: Blazing Flame */
+        .aura-lv-3 .character-img {
+            filter: drop-shadow(0 0 25px rgba(249, 115, 22, 0.9)) drop-shadow(0 0 45px rgba(225, 29, 72, 0.8)) contrast(1.08) saturate(1.1);
+            transform: scale(1.04);
+        }
+        .aura-lv-3 .aura-ring {
+            opacity: 0.7;
+            background: radial-gradient(circle, rgba(249,115,22,0.75) 0%, rgba(225,29,72,0.4) 45%, transparent 72%);
+            animation: flameAura 1.5s infinite alternate ease-in-out;
+        }
+
+        /* Level 4: Super Crimson Lightning */
+        .aura-lv-4 .character-img {
+            filter: drop-shadow(0 0 30px rgba(225, 29, 72, 1)) drop-shadow(0 0 60px rgba(250, 204, 21, 0.85)) contrast(1.12) saturate(1.2);
+            transform: scale(1.08);
+        }
+        .aura-lv-4 .aura-ring {
+            opacity: 0.9;
+            background: radial-gradient(circle, rgba(250,204,21,0.65) 0%, rgba(225,29,72,0.65) 45%, transparent 75%);
+            animation: superAura 1s infinite alternate ease-in-out;
+        }
+
+        /* Level 5+: God Awakening */
+        .aura-lv-5 .character-img {
+            filter: drop-shadow(0 0 35px #fff) drop-shadow(0 0 65px #e11d48) drop-shadow(0 0 95px #f59e0b) contrast(1.15) saturate(1.3);
+            transform: scale(1.12);
+        }
+        .aura-lv-5 .aura-ring {
+            opacity: 1;
+            background: conic-gradient(from 0deg, rgba(225,29,72,0.6), rgba(245,158,11,0.7), rgba(168,85,247,0.6), rgba(225,29,72,0.6));
+            filter: blur(25px);
+            animation: spinAura 4s linear infinite;
+        }
+
+        @keyframes pulseAura {
+            0%, 100% { transform: scale(0.95); opacity: 0.35; }
+            50% { transform: scale(1.1); opacity: 0.65; }
+        }
+        @keyframes flameAura {
+            0% { transform: scale(0.98) translateY(4px); }
+            100% { transform: scale(1.15) translateY(-8px); }
+        }
+        @keyframes superAura {
+            0% { transform: scale(1.0) rotate(-2deg); }
+            100% { transform: scale(1.22) rotate(2deg); }
+        }
+        @keyframes spinAura {
+            0% { transform: rotate(0deg) scale(1.15); }
+            50% { transform: rotate(180deg) scale(1.3); }
+            100% { transform: rotate(360deg) scale(1.15); }
+        }
+
+        /* Floating Ki Particles */
+        .ki-particle {
+            position: absolute;
+            bottom: -20px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp linear infinite;
+            z-index: 5;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.85;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-420px) scale(0.2);
+                opacity: 0;
+            }
+        }
+
+        /* RPG Card Border Glow */
+        .rpg-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .rpg-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .rpg-btn:active {
+            transform: translateY(2px);
+        }
+
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmerAnim 2.5s infinite;
+        }
+        @keyframes shimmerAnim {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @media (min-width: 1024px) and (min-height: 700px) {
+            html, body { height: 100%; overflow: hidden; }
+            body { min-height: 0 !important; }
+            header { flex: 0 0 auto; padding-top: .45rem !important; padding-bottom: .45rem !important; }
+            main { height: calc(100dvh - 64px); max-height: calc(100dvh - 64px); overflow: hidden; padding-top: .55rem !important; padding-bottom: .55rem !important; gap: .55rem !important; }
+            main > section { padding: .6rem !important; }
+            .grid.grid-cols-1.lg\\:grid-cols-12 { min-height: 0; flex: 1; gap: .6rem !important; }
+            .grid.grid-cols-1.lg\\:grid-cols-12 > section { min-height: 0; gap: .5rem !important; }
+            .grid.grid-cols-1.lg\\:grid-cols-12 > section > .rpg-panel { min-height: 0; height: 100%; padding: .7rem !important; gap: .55rem !important; }
+            #characterStage { height: min(43vh, 350px) !important; padding: .35rem !important; }
+            #mainCharacterImg { max-height: min(37vh, 300px) !important; }
+            #weeklyLineupPills { display: none !important; }
+            footer { display: none; }
+        }
+        @media (max-width: 1023px), (max-height: 699px) { body { overflow-y: auto; } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-rose-600 selection:text-white">
+
+    <!-- Top RPG HUD Header -->
+    <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand & Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-600 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-600/30 border border-rose-400/40">
+                    <i class="fa-solid fa-fire-flame-curved text-white text-xl animate-pulse"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-num font-black text-xl tracking-wider bg-gradient-to-r from-white via-rose-200 to-amber-400 bg-clip-text text-transparent">SAIYAN FIT</span>
+                        <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">RPG GYM</span>
+                    </div>
+                    <p class="text-xs text-slate-400">매일 쇼츠 1편 끝까지 시청하고 전투력을 돌파하라!</p>
+                </div>
+            </div>
+
+            <!-- Right HUD Status Items -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <!-- Combat Power (전투력) -->
+                <div class="bg-slate-900/90 border border-amber-500/30 rounded-xl px-3.5 py-1.5 flex items-center gap-2.5 shadow-inner">
+                    <div class="text-amber-400 text-lg"><i class="fa-solid fa-bolt-lightning"></i></div>
+                    <div>
+                        <div class="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider">전투력 (COMBAT POWER)</div>
+                        <div id="hudCombatPower" class="font-num font-black text-base sm:text-lg text-amber-400 leading-tight">1,500</div>
+                    </div>
+                </div>
+
+                <!-- Streak Count -->
+                <div class="hidden sm:flex bg-slate-900/90 border border-rose-500/30 rounded-xl px-3.5 py-1.5 items-center gap-2.5">
+                    <div class="text-rose-500 text-lg"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">주간 출석 달성</div>
+                        <div id="hudAttendanceCount" class="font-num font-bold text-sm text-white">0 / 7일</div>
+                    </div>
+                </div>
+
+                <!-- Cloud Sync Status & Sync Code Button -->
+                <button id="btnOpenCloudModal" type="button" class="bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/40 rounded-xl px-3 py-1.5 flex items-center gap-2 transition shadow-inner" title="클라우드 저장 상태 및 기기 연동">
+                    <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                    <div class="text-left">
+                        <div class="text-[10px] text-emerald-300/90 font-bold uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span id="cloudStatusText">연결 중...</span>
+                        </div>
+                        <div class="text-[11px] text-slate-300 font-semibold hidden md:block">기기 연동 코드</div>
+                    </div>
+                </button>
+</div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-6">
+
+        <!-- WEEKLY ATTENDANCE BOARD (주간 출석부 & 로테이션 제어) -->
+        <section class="rpg-panel rounded-2xl p-4 sm:p-5 border border-slate-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                        <i class="fa-solid fa-scroll"></i>
+                    </span>
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                            주간 전사 수련 출석부
+                            <span id="rotationBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                제 1주차 글로벌 챌린지
+                            </span>
+                        </h2>
+                        <p class="text-xs text-slate-400">요일을 선택하면 해당 요일의 해외 화제 홈트레이닝 루틴으로 즉시 전환됩니다.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <button id="btnRotateWeek" class="rpg-btn bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 border border-indigo-400/30">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>다음 주 신메뉴 7종 갱신</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7 Days Grid -->
+            <div id="weeklyAttendanceGrid" class="grid grid-cols-7 gap-1.5 sm:gap-3">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- MAIN DUAL LAYOUT: Left (Character RPG) / Right (Viral Shorts Workout) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- LEFT COLUMN: CHARACTER STATUS & VISUAL EVOLUTION (5 Cols on Desktop) -->
+            <section class="lg:col-span-5 flex flex-col gap-5">
+                <div class="rpg-panel rounded-2xl overflow-hidden border border-slate-800 flex flex-col">
+                    
+                    <!-- Character Rank & Name Bar -->
+                    <div class="bg-slate-900/90 px-5 py-3.5 border-b border-slate-800 flex items-center justify-between">
+                        <div>
+                            <span id="charClassTitle" class="text-xs font-bold uppercase tracking-wider text-rose-400 block">초급 레드 전사</span>
+                            <h3 class="text-xl font-black text-white flex items-center gap-2">
+                                <span>크림슨 사이언 마스터</span>
+                            </h3>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 block">현재 레벨</span>
+                            <span id="charLevelBadge" class="font-num font-black text-2xl text-amber-400">LV.1</span>
+                        </div>
+                    </div>
+
+                    <!-- Character Showcase Stage -->
+                    <div id="characterStage" class="character-stage aura-lv-1 h-[390px] sm:h-[440px] flex flex-col items-center justify-end p-4 relative select-none">
+                        
+                        <!-- Aura Ring Background -->
+                        <div class="aura-ring absolute w-72 h-72 rounded-full pointer-events-none"></div>
+
+                        <!-- Ki Particles Container -->
+                        <div id="kiParticlesContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+                        <!-- Top Floating Badges inside Stage -->
+                        <div class="absolute top-3 left-3 right-3 flex justify-between items-start z-20 pointer-events-none">
+                            <div class="bg-slate-950/80 backdrop-blur-md border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs">
+                                <span class="text-slate-400">오라 각성 단계:</span>
+                                <strong id="auraStageName" class="text-rose-400 ml-1">1단계 (기본 투기)</strong>
+                            </div>
+                            <button id="btnPreviewAura" class="pointer-events-auto bg-slate-900/90 hover:bg-rose-950/90 text-amber-300 border border-amber-500/40 rounded-xl px-2.5 py-1.5 text-xs font-bold transition flex items-center gap-1 shadow">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>각성 미리보기</span>
+                            </button>
+                        </div>
+
+                        <!-- Main Character PNG Image -->
+                        <img 
+                            id="mainCharacterImg" 
+                            src="Gemini_Generated_Image_1j5srk1j5srk1j5s-removebg-preview.png" 
+                            
+                            alt="나만의 전사 캐릭터" 
+                            class="character-img max-h-[340px] sm:max-h-[385px] w-auto object-contain select-none"
+                        />
+
+                        <!-- Pedestal / Ground Glow -->
+                        <div class="w-56 h-5 bg-rose-600/30 rounded-full blur-md -mt-2 z-0"></div>
+                    </div>
+
+                    <!-- EXP Bar & RPG Attributes -->
+                    <div class="p-5 bg-slate-950/60 border-t border-slate-800/80 flex flex-col gap-4">
+                        
+                        <!-- EXP Progress Bar -->
+                        <div>
+                            <div class="flex justify-between items-end mb-1.5">
+                                <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-star text-amber-400"></i> 경험치 (EXP)
+                                </span>
+                                <span id="expText" class="font-num text-xs font-bold text-amber-300">0 / 100 EXP (0%)</span>
+                            </div>
+                            <div class="w-full h-4 bg-slate-900 rounded-full overflow-hidden border border-slate-700 p-0.5">
+                                <div id="expBarFill" class="h-full bg-gradient-to-r from-rose-600 via-orange-500 to-amber-400 rounded-full transition-all duration-500 relative" style="width: 0%">
+                                    <div class="shimmer absolute inset-0"></div>
+                                </div>
+                            </div>
+                            <p id="nextLevelHint" class="text-[11px] text-slate-400 mt-1.5">
+                                💡 오늘의 운동 영상을 끝까지 시청하면 <strong class="text-amber-400">+100 EXP</strong>를 획득하여 즉시 레벨업합니다!
+                            </p>
+                        </div>
+
+                        <!-- 4 Body Stats Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+                                <div class="text-[11px] text-rose-400 font-bold"><i class="fa-solid fa-dumbbell mr-1"></i>근력 (STR)</div>
+                                <div id="statSTR" class="font-num font-black text-base text-white mt-0.5">15</div>
+                            </div>
+                            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+                                <div class="text-[11px] text-amber-400 font-bold"><i class="fa-solid fa-shield-halved mr-1"></i>코어 (VIT)</div>
+                                <div id="statVIT" class="font-num font-black text-base text-white mt-0.5">14</div>
+                            </div>
+                            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+                                <div class="text-[11px] text-emerald-400 font-bold"><i class="fa-solid fa-wind mr-1"></i>민첩 (AGI)</div>
+                                <div id="statAGI" class="font-num font-black text-base text-white mt-0.5">12</div>
+                            </div>
+                            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+                                <div class="text-[11px] text-sky-400 font-bold"><i class="fa-solid fa-fire mr-1"></i>투기 (KI)</div>
+                                <div id="statKI" class="font-num font-black text-base text-white mt-0.5">20</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT COLUMN: DAILY VIRAL WORKOUT SHORTS PLAYER & QUEST TRACKER (7 Cols on Desktop) -->
+            <section class="lg:col-span-7 flex flex-col gap-5">
+                
+                <div class="rpg-panel rounded-2xl p-5 border border-slate-800 flex flex-col gap-5">
+                    
+                    <!-- Quest Header & Viral Stats -->
+                    <div class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 pb-4">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                <span id="questDayTag" class="bg-rose-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-md">월요일 퀘스트</span>
+                                <span id="questCategoryTag" class="bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold px-2.5 py-0.5 rounded-md">전신 & 칼리스데닉스</span>
+                                <span id="questViewsBadge" class="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1">
+                                    <i class="fa-brands fa-youtube text-rose-500"></i> 조회수 3,120만회 돌파!
+                                </span>
+                            </div>
+                            <h2 id="questTitle" class="text-xl sm:text-2xl font-black text-white">해외에서 난리난 맨몸 전신 칼리스데닉스 루틴</h2>
+                            <p id="questChannel" class="text-xs text-slate-400 mt-0.5">크리에이터: @VIS Calisthenics • 글로벌 인기 쇼츠 / 릴스 챌린지</p>
+                        </div>
+
+                        <!-- Reward Box -->
+                        <div class="bg-amber-500/10 border border-amber-500/40 rounded-xl px-3.5 py-2 text-right">
+                            <span class="text-[10px] font-bold uppercase text-amber-300 block">완주 클리어 보상</span>
+                            <span id="questExpReward" class="font-num font-black text-lg text-amber-400">+120 EXP</span>
+                        </div>
+                    </div>
+
+                    <!-- Video Player & Active Workout Timer Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                        
+                        <!-- Shorts Vertical Video Container (7 Cols) -->
+                        <div class="md:col-span-7 flex flex-col items-center">
+                            <div class="w-full max-w-[320px] aspect-[9/16] rounded-2xl overflow-hidden bg-black border-2 border-slate-700 shadow-2xl relative group">
+                                <div id="youtubePlayerBox" class="w-full h-full"></div>
+                            </div>
+                            <div class="flex items-center justify-between w-full max-w-[320px] mt-2 text-xs text-slate-400 px-1">
+                                <span><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>영상을 재생하며 동작을 따라하세요</span>
+                                <a id="externalYoutubeLink" href="https://www.youtube.com/shorts/aRewl4eJ2LQ" target="_blank" rel="noopener noreferrer" class="text-rose-400 hover:underline font-bold flex items-center gap-1">
+                                    <span>원본 쇼츠 새창</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Workout Mission Control & Completion Gauge (5 Cols) -->
+                        <div class="md:col-span-5 flex flex-col gap-4 h-full justify-between">
+                            
+                            <!-- Exercise Guide Card -->
+                            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">
+                                        <i class="fa-solid fa-list-check mr-1"></i>오늘의 집중 수련 포인트
+                                    </span>
+                                    <span id="questTargetMuscle" class="text-xs font-semibold text-slate-300">상체·코어 밸런스</span>
+                                </div>
+
+                                <p id="questDescription" class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                    기구 없이 집에서 체중만을 이용해 전신 협응력과 폭발적인 상체 근력을 기르는 해외 화제의 칼리스데닉스 루틴입니다.
+                                </p>
+
+                                <div class="bg-slate-950/80 rounded-xl p-3 border border-slate-800/80">
+                                    <div class="text-[11px] text-slate-400 mb-1">🔥 추천 세트 가이드</div>
+                                    <div id="questSetsGuide" class="text-xs font-bold text-amber-300">쇼츠 루틴 반복 3세트 (휴식 30초)</div>
+                                </div>
+                            </div>
+
+                            <!-- Real-time Watch / Workout Progress Tracker -->
+                            <div class="bg-slate-900/95 border border-rose-500/30 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                        <i id="watchStatusIcon" class="fa-solid fa-play-circle text-rose-500"></i>
+                                        <span id="watchStatusLabel">수련 진행률 (끝까지 시청 시 완료)</span>
+                                    </span>
+                                    <span id="watchTimerText" class="font-num text-xs font-bold text-rose-400">0%</span>
+                                </div>
+
+                                <!-- Progress Bar -->
+                                <div class="w-full h-3.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                                    <div id="watchProgressBar" class="h-full bg-gradient-to-r from-rose-600 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+                                </div>
+
+                                <p class="text-[11px] text-slate-400 leading-normal">
+                                    영상을 재생하면 게이지가 자동으로 차오릅니다. 쇼츠가 반복 재생되거나 아래 <strong class="text-white">[수련 타이머 시작]</strong> 버튼을 눌러도 게이지가 충전됩니다.
+                                </p>
+
+                                <!-- Control Buttons -->
+                                <div class="flex flex-col gap-2 pt-1">
+                                    <button id="btnStartTimer" class="rpg-btn w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white shadow-lg shadow-rose-600/25 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-stopwatch"></i>
+                                        <span>함께 따라하기 수련 타이머 시작 (15초)</span>
+                                    </button>
+
+                                    <button id="btnClaimExp" disabled class="rpg-btn w-full py-3 px-4 rounded-xl font-black text-sm bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed flex items-center justify-center gap-2 transition">
+                                        <i class="fa-solid fa-lock"></i>
+                                        <span>시청 완료 후 경험치 획득 가능</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Weekly 7-Day Workout Preview List -->
+                    <div class="border-t border-slate-800 pt-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-layer-group text-amber-400"></i>
+                                <span>이번 주 7일 부위별 글로벌 50만+ 뷰 쇼츠 라인업</span>
+                            </h3>
+                            <span class="text-[11px] text-slate-400">매일 다른 자극으로 지루함 제로!</span>
+                        </div>
+                        <div id="weeklyLineupPills" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- LEVEL UP / QUEST COMPLETE MODAL (No Browser Alerts) -->
+    <div id="rewardModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="rpg-panel max-w-md w-full rounded-3xl p-6 border-2 border-amber-500/60 text-center relative animate-bounce-once shadow-2xl shadow-rose-600/30">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-rose-600 flex items-center justify-center text-white text-3xl shadow-lg mb-4">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <span id="modalBadge" class="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                WORKOUT COMPLETE!
+            </span>
+            <h3 id="modalTitle" class="text-2xl font-black text-white mt-2">오늘의 수련 퀘스트 완료!</h3>
+            <p id="modalDesc" class="text-sm text-slate-300 mt-2 leading-relaxed">
+                끝까지 운동 영상을 완주하여 캐릭터의 한계를 돌파했습니다!
+            </p>
+
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 my-5 flex justify-around items-center">
+                <div>
+                    <div class="text-xs text-slate-400">획득 경험치</div>
+                    <div id="modalExpGain" class="font-num font-black text-xl text-amber-400">+120 EXP</div>
+                </div>
+                <div class="h-8 w-[1px] bg-slate-800"></div>
+                <div>
+                    <div class="text-xs text-slate-400">상승 전투력</div>
+                    <div id="modalPowerGain" class="font-num font-black text-xl text-rose-400">+650 CP</div>
+                </div>
+            </div>
+
+            <button id="btnCloseModal" class="rpg-btn w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-black text-base shadow-lg">
+                확인 (강해진 전사 확인하기)
+            </button>
+        </div>
+    </div>
+
+    <!-- CLOUD SYNC & MULTI-DEVICE MODAL -->
+    <div id="cloudSyncModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="rpg-panel max-w-lg w-full rounded-3xl p-6 border border-emerald-500/50 relative shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg">
+                        <i class="fa-solid fa-cloud"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">클라우드 자동 저장 & 기기 연동</h3>
+                        <p class="text-xs text-slate-400">PC와 모바일 어디서든 내 전사 데이터를 이어서 육성하세요</p>
+                    </div>
+                </div>
+                <button id="btnCloseCloudModal" class="text-slate-400 hover:text-white text-lg px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <!-- Current User ID -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5">
+                    <div class="text-[11px] text-slate-400 font-bold mb-1">현재 기기 고유 식별 ID (자동 백업 활성화됨)</div>
+                    <div class="flex items-center justify-between gap-2">
+                        <code id="currentUserIdDisplay" class="text-xs text-emerald-300 font-mono break-all bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 flex-1">연결 확인 중...</code>
+                        <button id="btnCopySyncCode" type="button" class="rpg-btn bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white px-3 py-2 rounded-xl border border-slate-700 shrink-0 flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>복사</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cross-Device Sync Code Input -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col gap-2.5">
+                    <label for="syncPasscodeInput" class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-key"></i>
+                        <span>다른 기기와 이어하기 (나만의 전사 암호코드 설정)</span>
+                    </label>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        PC와 스마트폰에서 동일한 <strong class="text-white">전사 암호코드</strong>(예: <code class="text-rose-300">my-saiyan-777</code>)를 입력하고 불러오거나 저장하면, 어느 기기에서든 동일한 레벨과 출석부를 실시간으로 공유할 수 있습니다.
+                    </p>
+                    <div class="flex gap-2 mt-1">
+                        <input id="syncPasscodeInput" type="text" placeholder="나만의 전사 코드 입력 (예: saiyan-777)" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400" />
+                        <button id="btnApplySyncCode" type="button" class="rpg-btn bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-4 py-2 rounded-xl shrink-0">
+                            연동/불러오기
+                        </button>
+                    </div>
+                    <p id="syncFeedbackMsg" class="text-xs text-emerald-400 font-semibold hidden"></p>
+                </div>
+
+                <!-- Manual Reset Option -->
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
+                    <span class="text-slate-500">출석 완료 및 레벨업 시 즉시 클라우드에 자동 저장됩니다.</span>
+                    <button id="btnManualSave" type="button" class="text-emerald-400 hover:underline font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-floppy-disk"></i> 지금 즉시 저장
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-slate-950/80 py-4 px-4 text-center text-xs text-slate-500 mt-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>SAIYAN FIT RPG • 글로벌 50만+ 조회수 화제의 홈트레이닝 큐레이션 웹앱</p>
+            <p class="text-slate-600">매일 다른 7가지 루틴이 주간 단위로 자동 순환됩니다.</p>
+        </div>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        /**************************************************************
+         * 1. GLOBAL VIRAL WORKOUT SHORTS DATABASE (2 Weekly Sets = 14 Videos)
+         * All videos are real viral YouTube Shorts / Reels workouts with 500K ~ 31M+ views
+         **************************************************************/
+        const WEEKLY_ROTATION_SETS = [
+            // SET A: 제 1주차 글로벌 메가 히트 루틴 (7일)
+            [
+                {
+                    dayIndex: 0,
+                    dayShort: "월",
+                    dayName: "월요일",
+                    category: "전신 칼리스데닉스",
+                    title: "해외 조회수 3,120만! 맨몸 전신 각성 루틴",
+                    channel: "@VIS Calisthenics",
+                    views: "3,123만회",
+                    videoId: "aRewl4eJ2LQ",
+                    expReward: 120,
+                    targetMuscle: "전신 협응력 & 상체 폭발력",
+                    setsGuide: "영상 속 동작 12회씩 × 3세트 반복",
+                    desc: "기구 없이 집에서 자신의 체중만으로 전신 근육을 깨우는 해외 칼리스데닉스 최고 인기 쇼츠입니다."
+                },
+                {
+                    dayIndex: 1,
+                    dayShort: "화",
+                    dayName: "화요일",
+                    category: "식스팩 복근 폭격",
+                    title: "조회수 2,018만! 무도구 복근 집중 타격",
+                    channel: "@Max Euceda",
+                    views: "2,018만회",
+                    videoId: "Cii54H_Xv1M",
+                    expReward: 130,
+                    targetMuscle: "상복부 · 하복부 · 코어",
+                    setsGuide: "각 동작 40초 수행 / 15초 휴식 × 3라운드",
+                    desc: "전 세계 홈트레이닝 유저들이 가장 많이 저장한 맨몸 복근 정석 루틴으로 코어 단단함을 극대화합니다."
+                },
+                {
+                    dayIndex: 2,
+                    dayShort: "수",
+                    dayName: "수요일",
+                    category: "하체 & 코어 파워",
+                    title: "조회수 327만! 집에서 만드는 강철 하체 루틴",
+                    channel: "@Massy Arias",
+                    views: "327만회",
+                    videoId: "-RNMhjDPk4s",
+                    expReward: 140,
+                    targetMuscle: "대퇴사두근 · 둔근 · 코어",
+                    setsGuide: "동작별 좌우 15회 × 3세트",
+                    desc: "전사의 묵직한 하체 밸런스를 완성하는 무도구 하체 & 둔근 집중 트레이닝입니다."
+                },
+                {
+                    dayIndex: 3,
+                    dayShort: "목",
+                    dayName: "목요일",
+                    category: "가슴 & 상체 갑옷",
+                    title: "조회수 246만! 집에서 넓히는 갑옷 대흉근",
+                    channel: "@Future Workout",
+                    views: "246만회",
+                    videoId: "DmEp21dRLh0",
+                    expReward: 130,
+                    targetMuscle: "대흉근(상·중·하) & 삼두근",
+                    setsGuide: "변형 푸쉬업 10~15회 × 4세트",
+                    desc: "푸쉬업 각도를 달리하여 헬스장 벤치프레스 없이도 입체적인 갑옷 가슴 근육을 조각합니다."
+                },
+                {
+                    dayIndex: 4,
+                    dayShort: "금",
+                    dayName: "금요일",
+                    category: "초고강도 체지방 연소",
+                    title: "조회수 2,083만! 뱃살 순삭 파이어 HIIT",
+                    channel: "@Fitness and Fitness",
+                    views: "2,083만회",
+                    videoId: "HogEzxuWKcM",
+                    expReward: 150,
+                    targetMuscle: "심폐 지구력 & 전신 체지방 연소",
+                    setsGuide: "30초 전력 수행 + 10초 호흡 × 4세트",
+                    desc: "짧은 시간 안에 심박수를 끌어올려 칼로리를 태워버리는 해외 바이럴 1위 다이어트 루틴입니다."
+                },
+                {
+                    dayIndex: 5,
+                    dayShort: "토",
+                    dayName: "토요일",
+                    category: "실전 스트릿 근력",
+                    title: "조회수 3,059만! 한계 돌파 칼리스데닉스",
+                    channel: "@Alexandrosthenics",
+                    views: "3,059만회",
+                    videoId: "WDyPos9W3cM",
+                    expReward: 160,
+                    targetMuscle: "광배근 · 어깨 · 코어 제어력",
+                    setsGuide: "동작 정자세 버티기 및 반복 3세트",
+                    desc: "주말에 전사의 잠재력을 끌어올리는 고강도 맨몸 스트릿 워크아웃 챌린지입니다."
+                },
+                {
+                    dayIndex: 6,
+                    dayShort: "일",
+                    dayName: "일요일",
+                    category: "서서 하는 코어 & 리커버리",
+                    title: "조회수 378만! 층간소음 제로 스탠딩 카디오",
+                    channel: "@coach kenny24",
+                    views: "378만회",
+                    videoId: "TbBjLoVKtA0",
+                    expReward: 120,
+                    targetMuscle: "복사근(옆구리) & 전신 순환",
+                    setsGuide: "서서 리듬감 있게 50초 × 3세트",
+                    desc: "일요일에는 관절 부담 없이 서서 전신 땀을 빼고 코어를 조여주는 스탠딩 유산소로 한 주를 완성합니다."
+                }
+            ],
+            // SET B: 제 2주차 글로벌 챌린지 루틴 (다음 주 갱신용 7일)
+            [
+                {
+                    dayIndex: 0,
+                    dayShort: "월",
+                    dayName: "월요일",
+                    category: "무도구 전신 펌핑",
+                    title: "조회수 954만! 헬스장 필요 없는 전신 홈트",
+                    channel: "@shivam fitness",
+                    views: "954만회",
+                    videoId: "TsYL4V9kflo",
+                    expReward: 130,
+                    targetMuscle: "전신 근지구력 & 상체 펌핑",
+                    setsGuide: "동작별 15회 × 3세트",
+                    desc: "인스타그램과 유튜브 쇼츠에서 950만 뷰를 넘긴 집에서 하는 전신 근육 펌핑 루틴입니다."
+                },
+                {
+                    dayIndex: 1,
+                    dayShort: "화",
+                    dayName: "화요일",
+                    category: "11자 & 식스팩 코어",
+                    title: "조회수 1,569만! 5분 퍼펙트 맨몸 복근",
+                    channel: "@Adolfo",
+                    views: "1,569만회",
+                    videoId: "nWnv2psVIOA",
+                    expReward: 140,
+                    targetMuscle: "복직근 전체 & 하복부",
+                    setsGuide: "논스톱 4가지 동작 연달아 3세트",
+                    desc: "바닥에 누워 허리 통증 없이 복근만 정확하게 타격하는 글로벌 1,500만 뷰 코어 루틴입니다."
+                },
+                {
+                    dayIndex: 2,
+                    dayShort: "수",
+                    dayName: "수요일",
+                    category: "하체 라인 & 밸런스",
+                    title: "조회수 216만! 무중량 타바타 하체 조각",
+                    channel: "@blogilates",
+                    views: "216만회",
+                    videoId: "BoiUu_-KStk",
+                    expReward: 130,
+                    targetMuscle: "허벅지 안쪽 · 종아리 · 힙",
+                    setsGuide: "작은 반동으로 20회씩 × 3세트",
+                    desc: "점프 없이도 허벅지와 둔근이 타들어가는 듯한 자극을 주는 고밀도 맨몸 하체 운동입니다."
+                },
+                {
+                    dayIndex: 3,
+                    dayShort: "목",
+                    dayName: "목요일",
+                    category: "칼리스데닉스 기초 정복",
+                    title: "조회수 703만! 집에서 배우는 맨몸 파워 스킬",
+                    channel: "@Prashmithenics",
+                    views: "703만회",
+                    videoId: "NBRn0JFFjW4",
+                    expReward: 150,
+                    targetMuscle: "삼각근(어깨) · 삼두 · 코어",
+                    setsGuide: "단계별 동작 12회 × 4세트",
+                    desc: "초보자도 전사 같은 어깨와 팔 근육을 만들 수 있도록 구성된 700만 뷰 칼리스데닉스 루틴입니다."
+                },
+                {
+                    dayIndex: 4,
+                    dayShort: "금",
+                    dayName: "금요일",
+                    category: "상·하·측면 복근 올킬",
+                    title: "조회수 880만! 상복부+하복부+옆구리 3콤보",
+                    channel: "@Anupam Chaudhary",
+                    views: "880만회",
+                    videoId: "Ct9Ml9N9lPU",
+                    expReward: 140,
+                    targetMuscle: "복직근 & 외복사근",
+                    setsGuide: "12회씩 3세트 정자세 수행",
+                    desc: "상복부, 하복부, 옆구리까지 빈틈없이 조여주는 880만 뷰 달성 올인원 복근 쇼츠입니다."
+                },
+                {
+                    dayIndex: 5,
+                    dayShort: "토",
+                    dayName: "토요일",
+                    category: "초고속 전신 타바타",
+                    title: "조회수 687만! 전신 폭발 홈트레이닝",
+                    channel: "@Gymtopflix",
+                    views: "687만회",
+                    videoId: "W56Ve6s06hQ",
+                    expReward: 160,
+                    targetMuscle: "전신 폭발력 & 칼로리 소모",
+                    setsGuide: "40초 운동 / 20초 휴식 × 4세트",
+                    desc: "주말 체력을 한 단계 끌어올리는 687만 뷰 하이퍼 전신 웨이트리스 루틴입니다."
+                },
+                {
+                    dayIndex: 6,
+                    dayShort: "일",
+                    dayName: "일요일",
+                    category: "스탠딩 복근 & 유산소",
+                    title: "조회수 90만+! 눕지 않고 하는 스탠딩 코어",
+                    channel: "@coach kenny24",
+                    views: "90만회+",
+                    videoId: "hax_NaKD_N0",
+                    expReward: 120,
+                    targetMuscle: "코어 안정성 & 가벼운 유산소",
+                    setsGuide: "양쪽 교차 20회 × 3세트",
+                    desc: "매트 없이 서서 가볍게 따라하며 코어를 단련하고 피로를 풀어주는 일요일 루틴입니다."
+                }
+            ]
+        ];
+
+        /**************************************************************
+         * 2. RPG CHARACTER STATE & LEVEL DEFINITIONS
+         **************************************************************/
+        const AURA_TITLES = [
+            { minLv: 1, title: "초급 레드 전사", auraName: "1단계 (기본 투기)", classKey: "aura-lv-1" },
+            { minLv: 2, title: "각성한 크림슨 파이터", auraName: "2단계 (붉은 기운 발현)", classKey: "aura-lv-2" },
+            { minLv: 3, title: "폭염의 마스터 전사", auraName: "3단계 (화염 오라 폭발)", classKey: "aura-lv-3" },
+            { minLv: 4, title: "초월 크림슨 버서커", auraName: "4단계 (초전사 스파크)", classKey: "aura-lv-4" },
+            { minLv: 5, title: "갓 사이언 레전드", auraName: "5단계 (신성 초월 각성)", classKey: "aura-lv-5" }
+        ];
+
+        // Calculate today's day index (Mon=0 ... Sun=6)
+        const jsDay = new Date().getDay(); // 0 is Sun
+        const initialDayIndex = jsDay === 0 ? 6 : jsDay - 1;
+
+        const state = {
+            level: 1,
+            exp: 20,
+            expToNext: 100,
+            combatPower: 1500,
+            stats: { str: 15, vit: 14, agi: 12, ki: 20 },
+            weekSetIndex: 0, // 0 or 1
+            selectedDayIndex: initialDayIndex,
+            attendance: [false, false, false, false, false, false, false],
+            watchProgress: 0, // 0 to 100
+            isTimerRunning: false,
+            timerInterval: null,
+            previewAuraLevel: null
+        };
+
+        /**************************************************************
+         * 3. SOUND EFFECTS (Tone.js Synthesizer - No external MP3 needed)
+         **************************************************************/
+        async function playSoundEffect(type) {
+            try {
+                await Tone.start();
+                const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.volume.value = -8;
+                const now = Tone.now();
+
+                if (type === 'levelup') {
+                    synth.triggerAttackRelease(["C4", "E4", "G4"], "16n", now);
+                    synth.triggerAttackRelease(["E4", "G4", "C5"], "16n", now + 0.12);
+                    synth.triggerAttackRelease(["G4", "C5", "E5", "G5"], "4n", now + 0.25);
+                } else if (type === 'complete') {
+                    synth.triggerAttackRelease(["A4", "E5"], "8n", now);
+                } else if (type === 'click') {
+                    synth.triggerAttackRelease(["C5"], "32n", now);
+                }
+            } catch (e) {
+                // Ignore audio context restrictions if not interacted
+            }
+        }
+
+        /**************************************************************
+         * 4. YOUTUBE SHORTS PLAYER & PROGRESS TRACKER
+         **************************************************************/
+        let ytPlayer = null;
+        let ytMonitorInterval = null;
+
+
+        function showVideoError(code) {
+            const box = document.getElementById('youtubePlayerBox');
+            const messages = {
+                2: '유튜브 영상 ID가 올바르지 않습니다.',
+                5: '브라우저에서 HTML5 영상 재생 오류가 발생했습니다.',
+                100: '영상이 삭제되었거나 비공개 상태입니다.',
+                101: '이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',
+                150: '이 영상은 외부 웹사이트 재생을 허용하지 않습니다.',
+                153: '유튜브가 재생 요청의 출처(Referer)를 확인하지 못했습니다. GitHub Pages 등 웹 서버에서 열어 주세요.'
+            };
+            if (!box) return;
+            box.innerHTML = `<div class="h-full w-full flex flex-col items-center justify-center gap-3 p-4 text-center bg-slate-950 text-white"><i class="fa-brands fa-youtube text-rose-500 text-3xl"></i><p class="text-sm font-bold">유튜브 영상 재생 불가 (오류 ${code})</p><p class="text-xs text-slate-300">${messages[code] || '영상 재생에 실패했습니다. 원본 영상 링크를 이용해 주세요.'}</p><a class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold" target="_blank" rel="noopener noreferrer" href="${document.getElementById('externalYoutubeLink').href}">유튜브에서 영상 보기</a></div>`;
+        }
+
+        function onYouTubeIframeAPIReady() {
+            const currentWorkout = getCurrentWorkout();
+            ytPlayer = new YT.Player('youtubePlayerBox', {
+                height: '100%', width: '100%', videoId: currentWorkout.videoId,
+                playerVars: { autoplay: 0, controls: 1, rel: 0, playsinline: 1, enablejsapi: 1 },
+                events: { onStateChange: onPlayerStateChange, onError: (event) => showVideoError(event.data) }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                startYoutubeWatchMonitor();
+            } else if (event.data === YT.PlayerState.ENDED) {
+                // Completed watching to the end!
+                setWatchProgress(100);
+                stopYoutubeWatchMonitor();
+            } else {
+                stopYoutubeWatchMonitor();
+            }
+        }
+
+        function startYoutubeWatchMonitor() {
+            if (ytMonitorInterval) clearInterval(ytMonitorInterval);
+            ytMonitorInterval = setInterval(() => {
+                if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+                    const current = ytPlayer.getCurrentTime();
+                    const duration = ytPlayer.getDuration();
+                    if (duration > 0) {
+                        const ratio = Math.min(100, Math.floor((current / Math.max(duration - 0.5, 1)) * 100));
+                        if (ratio > state.watchProgress) {
+                            setWatchProgress(ratio);
+                        }
+                    } else {
+                        // Fallback increment while playing
+                        setWatchProgress(Math.min(100, state.watchProgress + 7));
+                    }
+                }
+            }, 500);
+        }
+
+        function stopYoutubeWatchMonitor() {
+            if (ytMonitorInterval) {
+                clearInterval(ytMonitorInterval);
+                ytMonitorInterval = null;
+            }
+        }
+
+        function getCurrentWorkout() {
+            return WEEKLY_ROTATION_SETS[state.weekSetIndex][state.selectedDayIndex];
+        }
+
+        /**************************************************************
+         * 5. UI RENDERING & RPG PROGRESSION LOGIC
+         **************************************************************/
+        function setWatchProgress(val) {
+            state.watchProgress = Math.min(100, Math.max(0, val));
+            const bar = document.getElementById('watchProgressBar');
+            const text = document.getElementById('watchTimerText');
+            const claimBtn = document.getElementById('btnClaimExp');
+            const statusLabel = document.getElementById('watchStatusLabel');
+            const statusIcon = document.getElementById('watchStatusIcon');
+
+            if (!bar || !text || !claimBtn || !statusLabel || !statusIcon) return;
+
+            bar.style.width = `${state.watchProgress}%`;
+            text.textContent = `${state.watchProgress}%`;
+
+            if (state.watchProgress >= 100) {
+                statusLabel.textContent = "수련 영상 시청 완료! 경험치를 수령하세요!";
+                statusIcon.className = "fa-solid fa-circle-check text-emerald-400 animate-bounce";
+
+                claimBtn.disabled = false;
+                const workout = getCurrentWorkout();
+                const alreadyDone = state.attendance[state.selectedDayIndex];
+                claimBtn.className = "rpg-btn w-full py-3.5 px-4 rounded-xl font-black text-sm bg-gradient-to-r from-amber-400 via-amber-500 to-rose-500 hover:from-amber-300 hover:to-rose-400 text-slate-950 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer animate-pulse";
+                claimBtn.innerHTML = `<i class="fa-solid fa-bolt"></i><span>${alreadyDone ? '추가 반복 수련 보상 받기' : '오늘의 출석 도장 &'} +${workout.expReward} EXP 획득!</span>`;
+            } else {
+                statusLabel.textContent = "수련 진행률 (끝까지 시청 시 완료)";
+                statusIcon.className = "fa-solid fa-play-circle text-rose-500";
+                claimBtn.disabled = true;
+                claimBtn.className = "rpg-btn w-full py-3 px-4 rounded-xl font-black text-sm bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed flex items-center justify-center gap-2 transition";
+                claimBtn.innerHTML = `<i class="fa-solid fa-lock"></i><span>시청 완료 후 경험치 획득 가능 (${state.watchProgress}%)</span>`;
+            }
+        }
+
+        function renderWeeklyAttendance() {
+            const grid = document.getElementById('weeklyAttendanceGrid');
+            if (!grid) return;
+            const currentSet = WEEKLY_ROTATION_SETS[state.weekSetIndex];
+            grid.innerHTML = '';
+
+            currentSet.forEach((item, idx) => {
+                const isSelected = idx === state.selectedDayIndex;
+                const isAttended = state.attendance[idx];
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `rpg-btn rounded-xl p-2 sm:p-3 border flex flex-col items-center justify-between gap-1.5 transition text-center relative ${
